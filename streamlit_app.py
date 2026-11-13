@@ -627,9 +627,16 @@ if uploaded_file is not None:
                 try:
                     out_xlsx = convert_single_ob(
                         file_path=tmp_input,
+                        style_name=os.path.splitext(file_name)[0],
                         output_folder=tmp_dir,
                         smv_col=saved_cfg.get("smv_column", "auto"),
-                        skip_dup=saved_cfg.get("skip_duplicates", True),
+                        skip_duplicates=saved_cfg.get("skip_duplicates", True),
+                        op_cutting_dispatch=saved_cfg.get("op_cutting_dispatch", True),
+                        op_line_feeding=saved_cfg.get("op_line_feeding", True),
+                        op_eol_qc=saved_cfg.get("op_eol_qc", True),
+                        op_dispatch=saved_cfg.get("op_dispatch", True),
+                        op_finishing=saved_cfg.get("op_finishing", True),
+                        op_tagging=saved_cfg.get("op_tagging", True),
                         log_func=capture_log
                     )
 
