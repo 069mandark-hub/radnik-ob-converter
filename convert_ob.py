@@ -112,15 +112,16 @@ def parse_raw_dataframe(file_path):
 
     return data_df, headers, extracted_style
 
-def convert_single_ob(file_path, style_name, output_folder, smv_col="auto",
-                      skip_duplicates=True,
+def convert_single_ob(file_path, style_name=None, output_folder=None, smv_col="auto",
+                      skip_duplicates=True, skip_dup=None,
                       op_cutting_dispatch=True,
                       op_line_feeding=True,
                       op_eol_qc=True,
                       op_dispatch=True,
                       op_finishing=True,
                       op_tagging=True,
-                      log_func=print):
+                      log_func=print,
+                      **kwargs):
     """
     Converts a single raw Radnik OB spreadsheet into Stitch MES format.
     - Section is always 'QUALITY CHECK'.
@@ -130,6 +131,12 @@ def convert_single_ob(file_path, style_name, output_folder, smv_col="auto",
     - Halts extraction immediately upon encountering 'TOTAL' row.
     - Supports individual checkboxes for each mandatory operation.
     """
+    if skip_dup is not None:
+        skip_duplicates = skip_dup
+    if output_folder is None:
+        output_folder = os.path.dirname(file_path) or "."
+    if not style_name:
+        style_name = os.path.splitext(os.path.basename(file_path))[0]
     log_func(f"Reading file: {file_path} (Style: '{style_name}')...")
 
     data_df, headers, detected_style = parse_raw_dataframe(file_path)
