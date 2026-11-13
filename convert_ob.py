@@ -63,7 +63,20 @@ def parse_raw_dataframe(file_path):
     if ext == ".csv":
         df_raw = pd.read_csv(file_path, header=None)
     else:
-        df_raw = pd.read_excel(file_path, header=None)
+        df_raw = None
+        engines = ["calamine", "xlrd", None] if ext == ".xls" else ["openpyxl", "calamine", None]
+        last_err = None
+        for eng in engines:
+            try:
+                if eng:
+                    df_raw = pd.read_excel(file_path, header=None, engine=eng)
+                else:
+                    df_raw = pd.read_excel(file_path, header=None)
+                break
+            except Exception as e:
+                last_err = e
+        if df_raw is None:
+            raise last_err
 
     extracted_style = ""
     header_idx = None
@@ -375,6 +388,7 @@ def convert_single_ob(file_path, style_name, output_folder, smv_col="auto",
             next_part = chain_items[i + 1]["part"]
             next_sec = "QUALITY CHECK"
         else:
+            # Final operation has empty next operation fields
             next_op = ""
             next_part = ""
             next_sec = ""
