@@ -57,12 +57,53 @@ st.markdown("""
         padding: 24px 16px !important;
     }
 
-    /* Force Dark Text on ALL Labels, Descriptions, and Checkboxes */
-    label, p, span, h1, h2, h3, h4, div {
+    /* Typography & Contrast: High-contrast Dark Text on Content Surfaces */
+    .main .block-container,
+    .main .block-container p,
+    .main .block-container label,
+    .main .block-container div[data-testid="stMarkdownContainer"] p,
+    section[data-testid="stSidebar"],
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] p {
         color: #0f172a !important;
     }
     .stCaption, .stCaption p {
         color: #64748b !important;
+    }
+
+    /* Sidebar Toggle Controls (Ensure hamburger/expand button is ALWAYS visible & clickable when sidebar is collapsed) */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
+        position: fixed !important;
+        top: 14px !important;
+        left: 14px !important;
+        z-index: 999999 !important;
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 4px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] button {
+        background: #ffffff !important;
+        color: #0f172a !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] svg {
+        fill: #0f172a !important;
+        stroke: #0f172a !important;
+    }
+    button[data-testid="stSidebarCollapseButton"] {
+        background: #f1f5f9 !important;
+        border-radius: 8px !important;
+    }
+    button[data-testid="stSidebarCollapseButton"] svg {
+        fill: #0f172a !important;
+        stroke: #0f172a !important;
     }
 
     /* Navigation Brand Banner */
@@ -170,17 +211,23 @@ st.markdown("""
         color: #ffffff !important;
     }
     /* Dropzone Internal Instruction Text */
-    [data-testid="stFileUploader"] section {
-        padding: 0 !important;
+    [data-testid="stFileUploaderDropzone"] {
+        background: transparent !important;
+        border: none !important;
+        padding: 12px !important;
     }
+    [data-testid="stFileUploaderDropzoneInstructions"] span,
+    [data-testid="stFileUploaderDropzoneInstructions"] div,
     [data-testid="stFileUploader"] section > input + div {
-        color: #334155 !important;
-        font-weight: 500 !important;
+        color: #0f172a !important;
+        font-weight: 600 !important;
         font-size: 14px !important;
     }
+    [data-testid="stFileUploaderDropzoneInstructions"] small,
     [data-testid="stFileUploader"] small {
         color: #64748b !important;
         font-size: 12px !important;
+        font-weight: 500 !important;
     }
 
     /* Converted Item Row (Exact Match with Reference Image) */
@@ -290,8 +337,8 @@ st.markdown("""
         width: 100% !important;
     }
 
-    /* Hide standard header decoration */
-    #MainMenu, footer, header {visibility: hidden;}
+    /* Hide default menu and footer while preserving sidebar collapse button */
+    #MainMenu, footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
