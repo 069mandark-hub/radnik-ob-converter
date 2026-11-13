@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 from convert_ob import convert_single_ob, load_config, save_config
 
-# Page Config: Wide layout
+# Page Config: Clean enterprise wide layout
 st.set_page_config(
     page_title="Stitch Converter — Enterprise OB Standardization",
     page_icon="https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
@@ -14,223 +14,321 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Load persistent config
+# Load persistent client configuration
 saved_cfg = load_config()
 
 # -------------------------------------------------------------
-# HIGH-END UI STYLING: EXACT REPLICA OF THE REFERENCE DASHBOARD
-# Royal Blue Backdrop + Elevated Floating White Canvas + Crisp Nav
+# HIGH-END ENTERPRISE UI STYLING (INTER / PLUS JAKARTA SANS)
+# Palette: #F8FAFC (BG), #FFFFFF (Surface), #0F172A (Text), #2563EB (Primary)
 # -------------------------------------------------------------
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Global Typography & Royal Blue Outer Canvas */
+    :root {
+        --primary-color: #2563eb !important;
+        --background-color: #f8fafc !important;
+        --secondary-background-color: #ffffff !important;
+        --text-color: #0f172a !important;
+    }
+
+    /* Global Typography & Canvas */
     html, body, [class*="css"], .stApp {
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-        background: #1d4ed8 !important; /* Royal Blue Background matching reference */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
     }
 
-    /* Floating White Dashboard Container */
+    /* Main Content Container */
+    .main {
+        background-color: #f8fafc !important;
+    }
     .main .block-container {
-        max-width: 1240px !important;
-        background: #ffffff !important;
-        border-radius: 24px !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-        margin-top: 24px !important;
-        margin-bottom: 24px !important;
-        padding: 32px 36px 48px 36px !important;
+        max-width: 980px !important;
+        margin: 0 auto !important;
+        padding: 36px 24px 64px 24px !important;
     }
 
-    /* Sidebar Reset & Styling (Always Visible & Accessible) */
-    section[data-testid="stSidebar"] {
-        background: #ffffff !important;
-        border-right: 1px solid #e2e8f0 !important;
-        box-shadow: none !important;
-        width: 290px !important;
+    /* Top Navigation Bar */
+    .top-navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0 28px 0;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 28px;
     }
-    section[data-testid="stSidebar"] .block-container {
-        background: transparent !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        margin: 0 !important;
-        padding: 24px 16px !important;
-    }
-
-    /* Typography & Contrast: High-contrast Dark Text on Content Surfaces */
-    .main .block-container,
-    .main .block-container p,
-    .main .block-container label,
-    .main .block-container div[data-testid="stMarkdownContainer"] p,
-    section[data-testid="stSidebar"],
-    section[data-testid="stSidebar"] p,
-    section[data-testid="stSidebar"] label,
-    section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] p {
-        color: #0f172a !important;
-    }
-    .stCaption, .stCaption p {
-        color: #64748b !important;
-    }
-
-    /* Sidebar Toggle Controls (Ensure hamburger/expand button is ALWAYS visible & clickable when sidebar is collapsed) */
-    header[data-testid="stHeader"] {
-        background: transparent !important;
-    }
-    [data-testid="stSidebarCollapsedControl"] {
-        display: flex !important;
-        visibility: visible !important;
-        position: fixed !important;
-        top: 14px !important;
-        left: 14px !important;
-        z-index: 999999 !important;
-        background: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 8px !important;
-        padding: 4px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    }
-    [data-testid="stSidebarCollapsedControl"] button {
-        background: #ffffff !important;
-        color: #0f172a !important;
-    }
-    [data-testid="stSidebarCollapsedControl"] svg {
-        fill: #0f172a !important;
-        stroke: #0f172a !important;
-    }
-    button[data-testid="stSidebarCollapseButton"] {
-        background: #f1f5f9 !important;
-        border-radius: 8px !important;
-    }
-    button[data-testid="stSidebarCollapseButton"] svg {
-        fill: #0f172a !important;
-        stroke: #0f172a !important;
-    }
-
-    /* Navigation Brand Banner */
-    .brand-header {
+    .top-nav-left {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 8px 12px 24px 12px;
-        border-bottom: 1px solid #f1f5f9;
-        margin-bottom: 16px;
     }
-    .brand-badge {
+    .brand-icon-box {
         width: 38px;
         height: 38px;
         background: #2563eb;
-        border-radius: 10px;
+        border-radius: 9px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #ffffff !important;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 15px;
+        letter-spacing: -0.02em;
     }
-    .brand-name {
-        font-size: 16px;
+    .brand-title {
+        font-size: 17px;
         font-weight: 700;
         color: #0f172a !important;
         line-height: 1.2;
     }
+    .brand-sub {
+        font-size: 12px;
+        color: #64748b !important;
+        font-weight: 400;
+    }
+    .top-nav-badge {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1d4ed8 !important;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
 
-    /* Nav Radio Pill Menu */
-    .nav-section {
-        margin-bottom: 20px;
+    /* Sidebar Styling: Clean White Surface with Crisp Dark Typography */
+    section[data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e2e8f0 !important;
+        width: 320px !important;
     }
-    div[data-testid="stRadio"] > div {
-        background: transparent !important;
-        gap: 4px !important;
+    section[data-testid="stSidebar"] .block-container {
+        padding: 24px 18px 48px 18px !important;
+        background: #ffffff !important;
     }
-    div[data-testid="stRadio"] label {
+
+    /* Force Dark Text on ALL Typography */
+    .stApp,
+    section[data-testid="stSidebar"],
+    .main,
+    p, span, label, h1, h2, h3, h4,
+    [data-testid="stWidgetLabel"] label,
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stWidgetLabel"] span,
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] span,
+    [data-testid="stCheckbox"] label,
+    [data-testid="stCheckbox"] label p,
+    [data-testid="stCheckbox"] label span,
+    [data-testid="stSelectbox"] label,
+    [data-testid="stSelectbox"] p {
+        color: #0f172a !important;
+    }
+
+    .stCaption, .stCaption p, small {
+        color: #64748b !important;
+    }
+
+    /* Sidebar Toggle Controls (3-bars hamburger expand button ALWAYS visible & prominent) */
+    header[data-testid="stHeader"] {
         background: transparent !important;
-        border-radius: 10px !important;
-        padding: 8px 14px !important;
-        transition: all 0.15s ease !important;
+        height: 48px !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
+        position: fixed !important;
+        top: 10px !important;
+        left: 10px !important;
+        z-index: 999999 !important;
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 6px 8px !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
         cursor: pointer !important;
     }
-    div[data-testid="stRadio"] label:hover {
-        background: #f1f5f9 !important;
+    [data-testid="stSidebarCollapsedControl"] button {
+        background: #ffffff !important;
+        color: #0f172a !important;
     }
-    div[data-testid="stRadio"] label span {
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        color: #334155 !important;
+    [data-testid="stSidebarCollapsedControl"] svg,
+    button[data-testid="stSidebarCollapseButton"] svg {
+        fill: #0f172a !important;
+        stroke: #0f172a !important;
+        color: #0f172a !important;
+    }
+    button[data-testid="stSidebarCollapseButton"] {
+        background: #f1f5f9 !important;
+        border-radius: 8px !important;
     }
 
-    /* Main Area Title */
-    .main-title-box {
+    /* Sidebar Headings & Sections */
+    .sidebar-section-title {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #475569 !important;
+        margin: 18px 0 8px 0;
+    }
+    .sidebar-card-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+    }
+
+    /* Checkbox Styling inside Sidebar */
+    [data-testid="stCheckbox"] {
+        padding: 3px 0 !important;
+    }
+    [data-testid="stCheckbox"] label p {
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: #1e293b !important;
+    }
+    [data-testid="stCheckbox"] input[type="checkbox"] {
+        accent-color: #2563eb !important;
+    }
+
+    /* Selectbox Styling */
+    [data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        color: #0f172a !important;
+    }
+    [data-baseweb="select"] * {
+        color: #0f172a !important;
+    }
+    [data-baseweb="popover"] {
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+    }
+    [data-baseweb="menu"] {
+        background-color: #ffffff !important;
+    }
+    [data-baseweb="menu"] li {
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+    }
+    [data-baseweb="menu"] li:hover {
+        background-color: #f1f5f9 !important;
+    }
+
+    /* Main Area Header */
+    .hero-title-box {
         margin-bottom: 24px;
     }
-    .main-title {
-        font-size: 24px;
+    .hero-title {
+        font-size: 26px;
         font-weight: 700;
         color: #0f172a !important;
         letter-spacing: -0.02em;
-        margin: 0 0 4px 0;
+        margin: 0 0 6px 0;
     }
-    .main-subtitle {
-        font-size: 13px;
+    .hero-subtitle {
+        font-size: 14px;
         color: #64748b !important;
         margin: 0;
     }
 
-    /* High-End Dropzone Container */
+    /* Active Config Summary Pill Bar */
+    .config-summary-bar {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        color: #475569 !important;
+    }
+    .config-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+    }
+    .config-pill-dot {
+        width: 7px;
+        height: 7px;
+        background: #16a34a;
+        border-radius: 50%;
+    }
+
+    /* Premium Upload Card */
+    .upload-card-wrapper {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        margin-bottom: 24px;
+    }
+
+    /* Streamlit File Uploader Box */
     [data-testid="stFileUploader"] {
-        background: #f8fafc !important;
-        border: 2px dashed #3b82f6 !important;
-        border-radius: 16px !important;
-        padding: 32px 24px !important;
+        background-color: #f8fafc !important;
+        border: 2px dashed #93c5fd !important;
+        border-radius: 12px !important;
+        padding: 24px 18px !important;
         text-align: center !important;
         transition: all 0.2s ease !important;
     }
     [data-testid="stFileUploader"]:hover {
-        background: #eff6ff !important;
-        border-color: #1d4ed8 !important;
+        background-color: #eff6ff !important;
+        border-color: #2563eb !important;
     }
-    /* Dropzone Upload Button */
+    [data-testid="stFileUploaderDropzone"] {
+        background-color: transparent !important;
+        border: none !important;
+        padding: 8px !important;
+    }
+
+    /* Browse Files Button */
     [data-testid="stFileUploader"] button {
-        background: #ffffff !important;
+        background-color: #ffffff !important;
         color: #2563eb !important;
         border: 1.5px solid #2563eb !important;
-        border-radius: 10px !important;
-        padding: 10px 24px !important;
+        border-radius: 8px !important;
+        padding: 8px 20px !important;
         font-weight: 600 !important;
-        font-size: 14px !important;
-        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12) !important;
-        transition: all 0.15s ease !important;
+        font-size: 13px !important;
+        box-shadow: 0 1px 2px rgba(37, 99, 235, 0.08) !important;
     }
     [data-testid="stFileUploader"] button * {
         color: #2563eb !important;
     }
     [data-testid="stFileUploader"] button:hover {
-        background: #2563eb !important;
+        background-color: #2563eb !important;
         color: #ffffff !important;
     }
     [data-testid="stFileUploader"] button:hover * {
         color: #ffffff !important;
     }
-    /* Dropzone Internal Instruction Text */
-    [data-testid="stFileUploaderDropzone"] {
-        background: transparent !important;
-        border: none !important;
-        padding: 12px !important;
-    }
     [data-testid="stFileUploaderDropzoneInstructions"] span,
-    [data-testid="stFileUploaderDropzoneInstructions"] div,
-    [data-testid="stFileUploader"] section > input + div {
+    [data-testid="stFileUploaderDropzoneInstructions"] div {
         color: #0f172a !important;
         font-weight: 600 !important;
         font-size: 14px !important;
     }
-    [data-testid="stFileUploaderDropzoneInstructions"] small,
-    [data-testid="stFileUploader"] small {
+    [data-testid="stFileUploaderDropzoneInstructions"] small {
         color: #64748b !important;
         font-size: 12px !important;
-        font-weight: 500 !important;
     }
 
-    /* Converted Item Row (Exact Match with Reference Image) */
+    /* Converted Item Row */
     .file-item-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -239,8 +337,13 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 12px 0;
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+        margin: 16px 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .file-meta-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
     .file-badge-icon {
         width: 36px;
@@ -251,14 +354,9 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #2563eb;
+        color: #2563eb !important;
         font-weight: 700;
         font-size: 12px;
-    }
-    .file-meta-group {
-        display: flex;
-        align-items: center;
-        gap: 12px;
     }
     .file-title-text {
         font-size: 14px;
@@ -269,35 +367,26 @@ st.markdown("""
         color: #16a34a !important;
         font-weight: 600;
         font-size: 13px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .file-size-tag {
-        color: #64748b !important;
-        font-size: 13px;
-        font-weight: 500;
     }
 
     /* Primary Convert Button */
     .stButton > button {
-        width: 100% !important;
-        background: #0f172a !important;
+        background-color: #2563eb !important;
         color: #ffffff !important;
-        border: 1px solid #0f172a !important;
-        border-radius: 10px !important;
-        padding: 14px 24px !important;
-        font-size: 15px !important;
+        border: 1px solid #1d4ed8 !important;
+        border-radius: 8px !important;
+        padding: 12px 24px !important;
         font-weight: 600 !important;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15) !important;
+        font-size: 14px !important;
+        width: 100% !important;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2) !important;
         transition: all 0.15s ease !important;
     }
     .stButton > button * {
         color: #ffffff !important;
     }
     .stButton > button:hover {
-        background: #1e293b !important;
-        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25) !important;
+        background-color: #1d4ed8 !important;
     }
 
     /* Metric Summary Badges */
@@ -305,10 +394,10 @@ st.markdown("""
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 12px;
-        margin: 20px 0 14px 0;
+        margin: 20px 0 16px 0;
     }
     .stat-pill-box {
-        background: #f8fafc;
+        background: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 10px;
         padding: 14px 16px;
@@ -330,311 +419,304 @@ st.markdown("""
     }
 
     /* Download Buttons */
-    .stDownloadButton button {
-        border-radius: 10px !important;
-        font-weight: 600 !important;
+    .stDownloadButton > button {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #0f172a !important;
+        border-radius: 8px !important;
         padding: 12px 20px !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
         width: 100% !important;
     }
+    .stDownloadButton > button * {
+        color: #ffffff !important;
+    }
+    .stDownloadButton > button:hover {
+        background-color: #1e293b !important;
+    }
 
-    /* Hide default menu and footer while preserving sidebar collapse button */
+    /* Hide standard footer and main menu, keep header for collapse button */
     #MainMenu, footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------------
-# SIDEBAR: ALWAYS VISIBLE NAVIGATION & SETTINGS
+# SIDEBAR: CONFIGURATION & RULES (ONE-TIME SETUP, CAN COLLAPSE)
 # -------------------------------------------------------------
 with st.sidebar:
     st.markdown("""
-    <div class="brand-header">
-        <div class="brand-badge">SC</div>
+    <div style="margin-bottom: 20px;">
+        <div style="font-size: 17px; font-weight: 700; color: #0f172a; margin-bottom: 2px;">Configuration & Rules</div>
+        <div style="font-size: 12px; color: #64748b;">Customize how your operation bulletin is processed.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # SECTION 1: COLUMN DETECTION
+    st.markdown('<div class="sidebar-section-title">SMV / SAM Column Detection</div>', unsafe_allow_html=True)
+    col_options = ["auto", "Column A", "Column B", "Column C", "Column D", "Column E", "Column F", "Column G", "Column H"]
+    saved_col = saved_cfg.get("smv_column", "auto")
+    col_idx = col_options.index(saved_col) if saved_col in col_options else 0
+    smv_col = st.selectbox(
+        "SMV Column Selection",
+        options=col_options,
+        index=col_idx,
+        label_visibility="collapsed",
+        help="Select 'auto' to automatically detect M/C.SMV, SAM, or choose a specific column."
+    )
+
+    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+
+    # SECTION 2: DUPLICATE HANDLING
+    st.markdown('<div class="sidebar-section-title">Duplicate Handling</div>', unsafe_allow_html=True)
+    skip_duplicates = st.checkbox(
+        "Skip duplicate operations",
+        value=saved_cfg.get("skip_duplicates", True),
+        help="Retain the first occurrence of duplicate operations."
+    )
+    st.caption("Retain the first occurrence of duplicate operations.")
+
+    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+
+    # SECTION 3: MANDATORY OPERATIONS
+    # Calculate active count
+    op_c_val = saved_cfg.get("op_cutting_dispatch", True)
+    op_l_val = saved_cfg.get("op_line_feeding", True)
+    op_eol_val = saved_cfg.get("op_eol_qc", True)
+    op_d_val = saved_cfg.get("op_dispatch", True)
+    op_f_val = saved_cfg.get("op_finishing", True)
+    op_t_val = saved_cfg.get("op_tagging", True)
+
+    active_count = sum([op_c_val, op_l_val, op_eol_val, op_d_val, op_f_val, op_t_val])
+
+    st.markdown(f'<div class="sidebar-section-title">Mandatory Operations ({active_count} of 6 enabled)</div>', unsafe_allow_html=True)
+    st.caption("Select the operations that must be included in the converted bulletin.")
+
+    op_c = st.checkbox("Cutting Dispatch (Tag C)", value=op_c_val)
+    op_l = st.checkbox("Line Feeding (Tag L | Flag)", value=op_l_val)
+    op_eol = st.checkbox("EOL QC (Tag A | Inspection Table)", value=op_eol_val)
+    op_d = st.checkbox("Dispatch (Tag D)", value=op_d_val)
+    op_f = st.checkbox("Finishing (Tag F)", value=op_f_val)
+    op_t = st.checkbox("Tagging (Tag T | Final Row)", value=op_t_val)
+
+    # Auto-save changes immediately to config
+    new_cfg = {
+        "smv_column": smv_col,
+        "skip_duplicates": skip_duplicates,
+        "op_cutting_dispatch": op_c,
+        "op_line_feeding": op_l,
+        "op_eol_qc": op_eol,
+        "op_dispatch": op_d,
+        "op_finishing": op_f,
+        "op_tagging": op_t
+    }
+    if new_cfg != saved_cfg:
+        save_config(new_cfg)
+        saved_cfg = new_cfg
+        st.rerun()
+
+    st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+
+    # SECTION 4: STITCH ERP SPECIFICATION SUMMARY
+    st.markdown('<div class="sidebar-section-title">ERP Format Specification</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="sidebar-card-box" style="font-size: 11px; color: #475569; line-height: 1.5;">
+        <div><b>Format:</b> 29 Standard Columns</div>
+        <div><b>Section:</b> QUALITY CHECK</div>
+        <div><b>Sewing M/C:</b> SEWING</div>
+        <div><b>Mandatory M/C:</b> TABLE</div>
+        <div><b>EOL QC:</b> Tag A (place_inspection_table=1)</div>
+        <div><b>Cut-off:</b> Stops at TOTAL row</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# -------------------------------------------------------------
+# MAIN WORKSPACE
+# -------------------------------------------------------------
+
+# Top Navigation Bar
+st.markdown("""
+<div class="top-navbar">
+    <div class="top-nav-left">
+        <div class="brand-icon-box">SC</div>
         <div>
-            <div class="brand-name">Stitch Converter</div>
-            <div style="font-size: 11px; color: #64748b;">Enterprise Suite</div>
+            <div class="brand-title">Stitch Converter</div>
+            <div class="brand-sub">Operation Bulletin Standardization</div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
-
-    app_mode = st.radio(
-        "Navigation",
-        options=["Convert Files", "Settings & Rules", "Stitch ERP Specs"],
-        index=0,
-        label_visibility="collapsed"
-    )
-
-    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-
-    if app_mode == "Convert Files":
-        st.markdown("**Quick Status**")
-        st.markdown(f"""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; font-size: 12px;">
-            <div style="margin-bottom: 6px;"><b>SMV Column:</b> {saved_cfg.get("smv_column", "auto")}</div>
-            <div style="margin-bottom: 6px;"><b>Section:</b> QUALITY CHECK</div>
-            <div style="margin-bottom: 6px;"><b>Duplicates:</b> {'Skipping' if saved_cfg.get("skip_duplicates", True) else 'Keeping'}</div>
-            <div><b>Mandatory Ops:</b> Active</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    elif app_mode == "Settings & Rules":
-        st.markdown("### Configuration")
-        st.caption("Settings are remembered automatically for this client.")
-
-        smv_col = st.selectbox(
-            "SMV / SAM Column Target",
-            options=["auto", "Column A", "Column B", "Column C", "Column D", "Column E", "Column F", "Column G", "Column H"],
-            index=0 if saved_cfg.get("smv_column") == "auto" else 4,
-            help="Choose 'auto' to detect M/C.SMV, SAM, or lock to a specific column index."
-        )
-
-        skip_duplicates = st.checkbox(
-            "Skip duplicate operations (Keep 1st occurrence)",
-            value=saved_cfg.get("skip_duplicates", True)
-        )
-
-        st.markdown("---")
-        st.markdown("**Mandatory Operations Checklist**")
-        st.caption("Default Parameters: Section: QUALITY CHECK | Sewing M/C: SEWING | Mandatory M/C: TABLE")
-
-        op_c = st.checkbox("Cutting Dispatch (Tag C)", value=saved_cfg.get("op_cutting_dispatch", True))
-        op_l = st.checkbox("Line Feeding (Tag L | Line Feeding flag)", value=saved_cfg.get("op_line_feeding", True))
-        op_eol = st.checkbox("EOL QC (Tag A | Inspection table flag)", value=saved_cfg.get("op_eol_qc", True))
-        op_d = st.checkbox("Dispatch (Tag D)", value=saved_cfg.get("op_dispatch", True))
-        op_f = st.checkbox("Finishing (Tag F)", value=saved_cfg.get("op_finishing", True))
-        op_t = st.checkbox("Tagging (Tag T | Final chain row)", value=saved_cfg.get("op_tagging", True))
-
-        # Auto-save changes
-        current_cfg = {
-            "smv_column": smv_col,
-            "skip_duplicates": skip_duplicates,
-            "op_cutting_dispatch": op_c,
-            "op_line_feeding": op_l,
-            "op_eol_qc": op_eol,
-            "op_dispatch": op_d,
-            "op_finishing": op_f,
-            "op_tagging": op_t
-        }
-        save_config(current_cfg)
-        saved_cfg = current_cfg
-        st.success("Preferences saved automatically!")
-
-    else:
-        st.markdown("### ERP Specifications")
-        st.markdown("""
-        - **Total Columns:** 29 Columns
-        - **Section:** Always `QUALITY CHECK`
-        - **Sewing Machines:** `SEWING`
-        - **Mandatory Machines:** `TABLE`
-        - **EOL QC Tag:** Tag `A` (place_inspection_table=1)
-        - **Line Feeding:** Tag `L` (is_line_feeding=1)
-        - **Tagging:** Tag `T` (final row with blank next_*)
-        """)
-
-# Always read current configurations
-cfg = load_config()
-
-# -------------------------------------------------------------
-# MAIN WORKSPACE: CONVERSION STAGE
-# -------------------------------------------------------------
-if app_mode == "Convert Files":
-    st.markdown("""
-    <div class="main-title-box">
-        <h1 class="main-title">Convert Operation Bulletin to Stitch MES</h1>
-        <p class="main-subtitle">Upload your factory technical breakdown spreadsheet to generate standardized ERP-ready files.</p>
+    <div>
+        <span class="top-nav-badge">Stitch MES Ready</span>
     </div>
-    """, unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
-    uploaded_file = st.file_uploader(
-        "Upload Operation Bulletin",
-        type=["xlsx", "xls", "csv"],
-        help="Upload .xlsx, .xls, or .csv operation bulletins."
-    )
+# Main Heading
+st.markdown("""
+<div class="hero-title-box">
+    <h1 class="hero-title">Stitch Converter</h1>
+    <p class="hero-subtitle">Standardize factory Operation Bulletins into Stitch MES 29-column format.</p>
+</div>
+""", unsafe_allow_html=True)
 
-    if uploaded_file is not None:
-        file_bytes = len(uploaded_file.getvalue())
-        size_str = f"{round(file_bytes / 1024, 1)} KB" if file_bytes < 1024*1024 else f"{round(file_bytes / (1024*1024), 2)} MB"
-        file_ext = os.path.splitext(uploaded_file.name)[1].upper().replace(".", "")
-        style_guess = os.path.splitext(uploaded_file.name)[0]
-        if style_guess.startswith("Radnik_OB_"):
-            style_guess = style_guess.replace("Radnik_OB_", "")
+# Active Configuration Summary Pill Bar
+active_ops_num = sum([
+    saved_cfg.get("op_cutting_dispatch", True),
+    saved_cfg.get("op_line_feeding", True),
+    saved_cfg.get("op_eol_qc", True),
+    saved_cfg.get("op_dispatch", True),
+    saved_cfg.get("op_finishing", True),
+    saved_cfg.get("op_tagging", True)
+])
 
-        # Display Selected File Item Card (Matching Reference Image)
-        st.markdown(f"""
-        <div class="file-item-card">
-            <div class="file-meta-group">
-                <div class="file-badge-icon">{file_ext}</div>
-                <div>
-                    <div class="file-title-text">{uploaded_file.name}</div>
-                    <div class="file-size-tag">{size_str} &bull; Ready for conversion</div>
-                </div>
+st.markdown(f"""
+<div class="config-summary-bar">
+    <span class="config-pill"><span class="config-pill-dot"></span> <b>SMV Detection:</b> {saved_cfg.get("smv_column", "auto").upper()}</span>
+    <span class="config-pill"><span class="config-pill-dot"></span> <b>Duplicates:</b> {'Skipped' if saved_cfg.get("skip_duplicates", True) else 'Kept'}</span>
+    <span class="config-pill"><span class="config-pill-dot"></span> <b>Mandatory Ops:</b> {active_ops_num} of 6 Active</span>
+    <span class="config-pill"><span class="config-pill-dot"></span> <b>Section:</b> QUALITY CHECK</span>
+    <span class="config-pill" style="margin-left: auto; color: #2563eb; font-weight: 600;">(Click ☰ at top-left to adjust rules)</span>
+</div>
+""", unsafe_allow_html=True)
+
+# Upload Card
+st.markdown('<div class="upload-card-wrapper">', unsafe_allow_html=True)
+
+uploaded_file = st.file_uploader(
+    "Upload Operation Bulletin",
+    type=["xlsx", "xls", "csv"],
+    help="Upload your factory Excel or CSV technical bulletin (up to 200MB)."
+)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Processing and Conversion
+if uploaded_file is not None:
+    file_bytes = uploaded_file.getvalue()
+    file_name = uploaded_file.name
+    file_size_kb = len(file_bytes) / 1024
+    size_str = f"{file_size_kb / 1024:.1f} MB" if file_size_kb > 1024 else f"{file_size_kb:.0f} KB"
+    file_ext = file_name.split('.')[-1].upper()
+
+    # File Selected State Card
+    st.markdown(f"""
+    <div class="file-item-card">
+        <div class="file-meta-group">
+            <div class="file-badge-icon">{file_ext}</div>
+            <div>
+                <div class="file-title-text">{file_name}</div>
+                <div style="font-size: 12px; color: #64748b;">Size: {size_str}</div>
             </div>
-            <span style="background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 9999px;">Pending Convert</span>
         </div>
-        """, unsafe_allow_html=True)
-
-        # Style Name Input
-        style_name = st.text_input("Style Name / Identifier", value=style_guess)
-
-        st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-        convert_clicked = st.button("Convert to Stitch MES Format")
-
-        if convert_clicked:
-            with st.spinner("Standardizing operation bulletin..."):
-                with tempfile.TemporaryDirectory() as tmpdir:
-                    input_path = os.path.join(tmpdir, uploaded_file.name)
-                    with open(input_path, "wb") as f:
-                        f.write(uploaded_file.getbuffer())
-
-                    logs = []
-                    def log_func(msg):
-                        logs.append(msg)
-
-                    try:
-                        convert_single_ob(
-                            input_path,
-                            style_name,
-                            tmpdir,
-                            smv_col=cfg.get("smv_column", "auto"),
-                            skip_duplicates=cfg.get("skip_duplicates", True),
-                            op_cutting_dispatch=cfg.get("op_cutting_dispatch", True),
-                            op_line_feeding=cfg.get("op_line_feeding", True),
-                            op_eol_qc=cfg.get("op_eol_qc", True),
-                            op_dispatch=cfg.get("op_dispatch", True),
-                            op_finishing=cfg.get("op_finishing", True),
-                            op_tagging=cfg.get("op_tagging", True),
-                            log_func=log_func
-                        )
-
-                        csv_path = os.path.join(tmpdir, f"Stitch_OB_{style_name}.csv")
-                        xlsx_path = os.path.join(tmpdir, f"Stitch_OB_{style_name}.xlsx")
-
-                        if not os.path.exists(csv_path):
-                            csv_path = os.path.join(tmpdir, f"Stitch_OB_{style_name}_latest.csv")
-                        if not os.path.exists(xlsx_path):
-                            xlsx_path = os.path.join(tmpdir, f"Stitch_OB_{style_name}_latest.xlsx")
-
-                        if os.path.exists(csv_path) and os.path.exists(xlsx_path):
-                            df_res = pd.read_csv(csv_path)
-
-                            total_rows = len(df_res)
-                            total_sam = round(float(df_res['sam'].sum()), 2)
-                            
-                            dup_count = 0
-                            for l in logs:
-                                if "Skipped" in l and "duplicate" in l:
-                                    try:
-                                        dup_count = int(l.split("Skipped")[1].split("duplicate")[0].strip())
-                                    except Exception:
-                                        dup_count = 1
-
-                            # Converted File Item Card with Green Check (Matching Reference Image)
-                            st.markdown(f"""
-                            <div class="file-item-card" style="border-color: #86efac; background: #f0fdf4;">
-                                <div class="file-meta-group">
-                                    <div class="file-badge-icon" style="background: #dcfce7; border-color: #bbf7d0; color: #166534;">{file_ext}</div>
-                                    <div>
-                                        <div class="file-title-text">Stitch_OB_{style_name}.csv</div>
-                                        <div class="file-size-tag">{total_rows} sequence rows &bull; {total_sam} mins SAM</div>
-                                    </div>
-                                </div>
-                                <div class="status-converted">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    <span>Converted</span>
-                                </div>
-                            </div>
-                            """, unsafe_allow_html=True)
-
-                            # Metric Summary Cards
-                            st.markdown(f"""
-                            <div class="stats-row">
-                                <div class="stat-pill-box">
-                                    <div class="stat-pill-num">{total_rows}</div>
-                                    <div class="stat-pill-lbl">Sequence Rows</div>
-                                </div>
-                                <div class="stat-pill-box">
-                                    <div class="stat-pill-num">{total_sam}</div>
-                                    <div class="stat-pill-lbl">Total SAM (min)</div>
-                                </div>
-                                <div class="stat-pill-box">
-                                    <div class="stat-pill-num">{dup_count}</div>
-                                    <div class="stat-pill-lbl">Duplicates Skipped</div>
-                                </div>
-                                <div class="stat-pill-box">
-                                    <div class="stat-pill-num" style="font-size: 15px; margin-top: 5px;">QUALITY CHECK</div>
-                                    <div class="stat-pill-lbl">Section Name</div>
-                                </div>
-                            </div>
-                            """, unsafe_allow_html=True)
-
-                            # Dual Download Buttons
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                with open(csv_path, "rb") as f_csv:
-                                    st.download_button(
-                                        label="Download Stitch CSV (ERP Ready)",
-                                        data=f_csv.read(),
-                                        file_name=f"Stitch_OB_{style_name}.csv",
-                                        mime="text/csv",
-                                        use_container_width=True
-                                    )
-                            with col2:
-                                with open(xlsx_path, "rb") as f_xlsx:
-                                    st.download_button(
-                                        label="Download Excel Workbook (.xlsx)",
-                                        data=f_xlsx.read(),
-                                        file_name=f"Stitch_OB_{style_name}.xlsx",
-                                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                        use_container_width=True
-                                    )
-
-                            st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
-
-                            # Operations Table Preview
-                            with st.expander(f"Preview Converted Sequence Table ({total_rows} rows)"):
-                                st.dataframe(
-                                    df_res[["sort_order", "operation", "section", "machine_type", "tag", "sam", "is_line_feeding_operation", "place_inspection_table", "next_style_operation_item_operation"]],
-                                    use_container_width=True,
-                                    height=280
-                                )
-
-                            with st.expander("Conversion Execution Log"):
-                                st.code("\n".join(logs))
-
-                        else:
-                            st.error("Conversion failed to produce output files.")
-
-                    except Exception as ex:
-                        st.error(f"Error during conversion: {ex}")
-                        if logs:
-                            st.code("\n".join(logs))
-
-elif app_mode == "Settings & Rules":
-    st.markdown("""
-    <div class="main-title-box">
-        <h1 class="main-title">Configuration & Rules</h1>
-        <p class="main-subtitle">Use the left sidebar to customize column mapping, duplicates, and mandatory operations.</p>
+        <div class="status-converted">Ready to Convert</div>
     </div>
     """, unsafe_allow_html=True)
-    st.info("Please adjust your settings in the left navigation sidebar. All preferences are remembered automatically.")
 
-else:
+    convert_clicked = st.button("Convert to Stitch Format", key="btn_convert_main")
+
+    if convert_clicked:
+        with st.spinner("Standardizing and generating Stitch MES sequence..."):
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                tmp_input = os.path.join(tmp_dir, file_name)
+                with open(tmp_input, "wb") as f:
+                    f.write(file_bytes)
+
+                logs = []
+                def capture_log(msg):
+                    logs.append(msg)
+
+                try:
+                    out_xlsx = convert_single_ob(
+                        file_path=tmp_input,
+                        output_folder=tmp_dir,
+                        smv_col=saved_cfg.get("smv_column", "auto"),
+                        skip_dup=saved_cfg.get("skip_duplicates", True),
+                        log_func=capture_log
+                    )
+
+                    with open(out_xlsx, "rb") as f:
+                        xlsx_data = f.read()
+
+                    df_converted = pd.read_excel(out_xlsx)
+                    csv_data = df_converted.to_csv(index=False).encode("utf-8")
+
+                    total_rows = len(df_converted)
+                    sam_sum = round(df_converted["sam"].sum(), 2)
+                    sewing_ops = len(df_converted[df_converted["machine_type"] == "SEWING"])
+                    mandatory_ops = len(df_converted[df_converted["machine_type"] == "TABLE"])
+
+                    # Store in session state for instant persistence
+                    st.session_state["converted_result"] = {
+                        "xlsx_data": xlsx_data,
+                        "csv_data": csv_data,
+                        "file_name": file_name,
+                        "df": df_converted,
+                        "total_rows": total_rows,
+                        "sam_sum": sam_sum,
+                        "sewing_ops": sewing_ops,
+                        "mandatory_ops": mandatory_ops
+                    }
+                    st.success("Successfully converted to 29-column Stitch MES format!")
+
+                except Exception as e:
+                    st.error(f"Conversion failed: {str(e)}")
+
+# Display Result if Converted
+if "converted_result" in st.session_state:
+    res = st.session_state["converted_result"]
+    base_name = os.path.splitext(res["file_name"])[0]
+
     st.markdown("""
-    <div class="main-title-box">
-        <h1 class="main-title">Stitch ERP Specifications</h1>
-        <p class="main-subtitle">Standard compliance rules for Stitch MES Operation Bulletins.</p>
+    <div class="stats-row">
+        <div class="stat-pill-box">
+            <div class="stat-pill-num">{}</div>
+            <div class="stat-pill-lbl">Total Sequence Rows</div>
+        </div>
+        <div class="stat-pill-box">
+            <div class="stat-pill-num">{}</div>
+            <div class="stat-pill-lbl">Sewing Operations</div>
+        </div>
+        <div class="stat-pill-box">
+            <div class="stat-pill-num">{}</div>
+            <div class="stat-pill-lbl">Mandatory Ops</div>
+        </div>
+        <div class="stat-pill-box">
+            <div class="stat-pill-num">{}</div>
+            <div class="stat-pill-lbl">Total SAM (Mins)</div>
+        </div>
+    </div>
+    """.format(res["total_rows"], res["sewing_ops"], res["mandatory_ops"], res["sam_sum"]), unsafe_allow_html=True)
+
+    # Converted File Status Card with Download Actions
+    st.markdown(f"""
+    <div class="file-item-card" style="border-color: #86efac; background: #f0fdf4;">
+        <div class="file-meta-group">
+            <div class="file-badge-icon" style="background: #dcfce7; border-color: #86efac; color: #16a34a;">XLSX</div>
+            <div>
+                <div class="file-title-text">Stitch_OB_{base_name}.xlsx</div>
+                <div style="font-size: 12px; color: #16a34a; font-weight: 500;">✓ Converted • 29 Columns • Linked Flow Chain</div>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
-    st.markdown("""
-    - **Total Columns:** Exactly 29 Standard Columns
-    - **Section Column:** Always set to `QUALITY CHECK`
-    - **Sewing Machine Type:** Set to `SEWING`
-    - **Mandatory Machine Type:** Set to `TABLE`
-    - **Cutting Dispatch:** Tag `C`
-    - **Line Feeding:** Tag `L` (`is_line_feeding_operation = 1`)
-    - **EOL QC:** Tag `A` (`place_inspection_table = 1`)
-    - **Dispatch:** Tag `D`
-    - **Finishing:** Tag `F`
-    - **Tagging:** Tag `T` (Final row with blank next_style_operation fields)
-    """)
+
+    col_dl1, col_dl2 = st.columns(2)
+    with col_dl1:
+        st.download_button(
+            label="Download Standardized Excel (.xlsx)",
+            data=res["xlsx_data"],
+            file_name=f"Stitch_OB_{base_name}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="dl_xlsx"
+        )
+    with col_dl2:
+        st.download_button(
+            label="Download CSV Format (.csv)",
+            data=res["csv_data"],
+            file_name=f"Stitch_OB_{base_name}.csv",
+            mime="text/csv",
+            key="dl_csv"
+        )
+
+    # Preview Table
+    with st.expander("Preview Standardized 29-Column Table", expanded=False):
+        st.dataframe(res["df"], use_container_width=True)
