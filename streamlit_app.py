@@ -14,121 +14,147 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom High-End Styling: Clean, High Legibility, No Broken Divs, Polished Palette
+# High-Contrast CSS: Ensures 100% visible, dark text on all screens (No white-on-white text)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-    /* Global Typography & Light Gradient Ambient Background */
+    /* Global Typography & Light Ambient Background */
     html, body, [class*="css"], .stApp {
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-        background: linear-gradient(145deg, #f1f5f9 0%, #e8edf5 45%, #f8fafc 100%) !important;
+        background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 45%, #f8fafc 100%) !important;
         color: #0f172a !important;
     }
 
-    /* Top Padding & Center Container Width */
+    /* FORCE VISIBILITY & HIGH CONTRAST ON ALL LABELS & TEXT */
+    label, label p, label span,
+    .stCheckbox span, .stCheckbox p, .stCheckbox label,
+    .stSelectbox label, .stSelectbox p,
+    [data-testid="stWidgetLabel"], [data-testid="stWidgetLabel"] p,
+    [data-testid="stMarkdownContainer"], [data-testid="stMarkdownContainer"] p,
+    .stCaption, .stCaption p {
+        color: #0f172a !important;
+        font-weight: 500 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Main Container Sizing */
     .main .block-container {
         max-width: 680px !important;
-        padding-top: 48px !important;
+        padding-top: 50px !important;
         padding-bottom: 60px !important;
     }
 
-    /* Style the Sidebar Hamburger Button (3 Bars) prominently in top-left */
+    /* Top-Left Hamburger Toggle (3 Bars) */
     [data-testid="collapsedControl"] {
         display: flex !important;
         visibility: visible !important;
         top: 20px !important;
         left: 20px !important;
         background: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
+        border: 2px solid #cbd5e1 !important;
         border-radius: 8px !important;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08) !important;
-        padding: 6px 12px !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1) !important;
+        padding: 8px 12px !important;
         color: #0f172a !important;
         z-index: 999999 !important;
-        transition: all 0.2s ease !important;
     }
-    [data-testid="collapsedControl"]:hover {
-        background: #f8fafc !important;
-        border-color: #94a3b8 !important;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12) !important;
+    [data-testid="collapsedControl"] svg {
+        fill: #0f172a !important;
+        stroke: #0f172a !important;
     }
 
-    /* Hide standard Streamlit header & footer */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {background: transparent !important;}
-
-    /* Dropzone Styling with crisp contrast */
+    /* File Uploader Container & Internal Text */
     [data-testid="stFileUploader"] {
         background: #ffffff !important;
-        border: 2px dashed #cbd5e1 !important;
+        border: 2px dashed #94a3b8 !important;
         border-radius: 14px !important;
-        padding: 24px 20px !important;
-        box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.05) !important;
-        transition: all 0.2s ease !important;
+        padding: 30px 24px !important;
+        box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.06) !important;
     }
-    [data-testid="stFileUploader"]:hover {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 12px 28px -4px rgba(59, 130, 246, 0.08) !important;
+    [data-testid="stFileUploader"] * {
+        color: #0f172a !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
-    [data-testid="stFileUploader"] section {
-        background: transparent !important;
-        padding: 0 !important;
-    }
-    [data-testid="stFileUploader"] section > input + div {
-        color: #475569 !important;
+    [data-testid="stFileUploader"] small {
+        color: #64748b !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
     }
     [data-testid="stFileUploader"] button {
-        background: #f1f5f9 !important;
-        color: #0f172a !important;
-        border: 1px solid #cbd5e1 !important;
+        background: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #0f172a !important;
         border-radius: 8px !important;
-        padding: 8px 18px !important;
+        padding: 10px 22px !important;
         font-weight: 600 !important;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+    }
+    [data-testid="stFileUploader"] button * {
+        color: #ffffff !important;
     }
     [data-testid="stFileUploader"] button:hover {
-        background: #e2e8f0 !important;
-        border-color: #94a3b8 !important;
+        background: #1e293b !important;
     }
 
-    /* Style Input Fields */
+    /* Input Field */
     [data-testid="stTextInput"] input {
         background: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 10px !important;
-        padding: 10px 14px !important;
-        font-size: 14px !important;
         color: #0f172a !important;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
-    }
-    [data-testid="stTextInput"] input:focus {
-        border-color: #2563eb !important;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 10px !important;
+        padding: 12px 14px !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
     }
 
     /* Primary Convert Button */
     .stButton > button {
         width: 100% !important;
         background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
-        color: #ffffff !important;
         border: 1px solid #0f172a !important;
         border-radius: 10px !important;
         padding: 14px 24px !important;
-        font-size: 15px !important;
+        font-size: 16px !important;
         font-weight: 600 !important;
-        letter-spacing: -0.01em !important;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15) !important;
-        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2) !important;
         cursor: pointer !important;
     }
+    .stButton > button * {
+        color: #ffffff !important;
+    }
     .stButton > button:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25) !important;
+        background: #0f172a !important;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.3) !important;
     }
 
-    /* Stat Metric Badges */
+    /* Sidebar Clean Styling */
+    section[data-testid="stSidebar"] {
+        background: #ffffff !important;
+        border-right: 1px solid #cbd5e1 !important;
+        box-shadow: 6px 0 24px rgba(15, 23, 42, 0.05) !important;
+    }
+    section[data-testid="stSidebar"] * {
+        color: #0f172a !important;
+    }
+    .sidebar-header-box {
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    .sidebar-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a !important;
+    }
+    .sidebar-note {
+        font-size: 13px;
+        color: #64748b !important;
+        margin-top: 4px;
+    }
+
+    /* Metric Badges */
     .metrics-container {
         display: flex;
         gap: 12px;
@@ -139,22 +165,21 @@ st.markdown("""
         flex: 1;
         min-width: 130px;
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
         border-radius: 12px;
         padding: 16px 12px;
         text-align: center;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
     }
     .stat-number {
         font-size: 24px;
         font-weight: 700;
-        color: #0f172a;
-        line-height: 1.1;
+        color: #0f172a !important;
     }
     .stat-label {
         font-size: 11px;
         font-weight: 600;
-        color: #64748b;
+        color: #64748b !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-top: 6px;
@@ -166,30 +191,25 @@ st.markdown("""
         font-weight: 600 !important;
         padding: 12px 20px !important;
         box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08) !important;
-        transition: all 0.2s ease !important;
+    }
+    .stDownloadButton button * {
+        color: #0f172a !important;
     }
 
-    /* Sidebar Styling */
-    section[data-testid="stSidebar"] {
-        background: #ffffff !important;
-        border-right: 1px solid #e2e8f0 !important;
-        box-shadow: 6px 0 24px rgba(15, 23, 42, 0.04) !important;
+    /* Select Dropdown */
+    [data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 8px !important;
     }
-    .sidebar-header-box {
-        padding-bottom: 12px;
-        margin-bottom: 16px;
-        border-bottom: 1px solid #e2e8f0;
+    [data-baseweb="select"] * {
+        color: #0f172a !important;
     }
-    .sidebar-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: #0f172a;
-        margin-bottom: 4px;
-    }
-    .sidebar-note {
-        font-size: 12px;
-        color: #64748b;
-    }
+
+    /* Hide standard header decoration */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {background: transparent !important;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -197,7 +217,7 @@ st.markdown("""
 saved_cfg = load_config()
 
 # -------------------------------------------------------------
-# SIDEBAR: ONE-TIME SETUP (HIDDEN BEHIND 3-BAR HAMBURGER MENU)
+# SIDEBAR: ONE-TIME SETUP (ACCESSIBLE VIA 3-BAR MENU IN TOP-LEFT)
 # -------------------------------------------------------------
 with st.sidebar:
     st.markdown("""
@@ -220,7 +240,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown("**Mandatory Operations**")
+    st.markdown("**Mandatory Operations Checklist**")
     st.caption("Standard rules: Section: QUALITY CHECK | Sewing M/C: SEWING | Mandatory M/C: TABLE")
 
     op_c = st.checkbox("Cutting Dispatch (Tag C)", value=saved_cfg.get("op_cutting_dispatch", True))
@@ -249,7 +269,7 @@ with st.sidebar:
 st.markdown("""
 <div style="text-align: center; margin-bottom: 28px;">
     <h1 style="font-size: 32px; font-weight: 700; color: #0f172a; margin: 0 0 6px 0; letter-spacing: -0.02em;">Stitch Converter</h1>
-    <p style="font-size: 14px; color: #64748b; margin: 0;">Standardize factory Operation Bulletins into Stitch MES 29-column format</p>
+    <p style="font-size: 15px; color: #475569; margin: 0; font-weight: 500;">Standardize factory Operation Bulletins into Stitch MES 29-column format</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -266,7 +286,7 @@ if uploaded_file is not None:
 
     style_name = st.text_input("Style Name / Reference", value=style_guess)
 
-    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
     convert_clicked = st.button("Convert to Stitch MES Format")
 
     if convert_clicked:
